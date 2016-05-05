@@ -1,16 +1,16 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'boolean-search/version'
+require 'boolean_parser/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "boolean-search"
-  spec.version       = Boolean::Search::VERSION
+  spec.name          = "boolean_parser"
+  spec.version       = BooleanParser::VERSION
   spec.authors       = ["Chakrit Wichian"]
   spec.email         = ["service@chakrit.net"]
 
   spec.summary       = "Provides a parser for standard boolean search sytax."
-  spec.homepage      = "https://github.com/chakrit/boolean-search"
+  spec.homepage      = "https://github.com/chakrit/boolean-parser"
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }

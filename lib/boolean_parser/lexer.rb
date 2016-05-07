@@ -31,7 +31,7 @@ module BooleanParser
       when '+' then emit(:plus)
       when '-' then emit(:minus)
       else
-        raise 'not a sumbol'
+        raise 'not a symbol'
       end
     end
 
@@ -44,6 +44,7 @@ module BooleanParser
       while !eof?
         case peek
         when ' ', ':', '+', '-' then return emit(:term)
+        when '"' then discard
         else
           consume
         end

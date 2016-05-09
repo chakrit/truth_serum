@@ -11,8 +11,8 @@ module TruthSerum
       '-a:b'      => { negative_filters: { 'a' => 'b' } },
       'term a:b'  => { terms: ['term'], filters: { 'a' => 'b' } },
       '-term-a:b' => { negative_terms: ['term'], negative_filters: { 'a' => 'b' } },
-      'a::::b'    => { filters: { 'a' => 'b' } },
-      'a:bb:c'    => { terms: ['c'], filters: { 'a' => 'bb' } },
+      'a::::b'    => { filters: { 'a' => ':::b' } },
+      'a:bb:c'    => { filters: { 'a' => 'bb:c' } },
     }
 
     def test_parse

@@ -51,10 +51,12 @@ module TruthSerum
       term = consume.text
       return emit_term(term, negate: negate) unless peek.colon?
 
-      # if we have a filter (detect `:`)
-      consume while peek.colon?
+      # initial `:` separator
+      consume
 
-      value = consume.text
+      # the rest becomes value (including successive `:`s)
+      value += consume.text while peek.colon? || peek.term?
+
       emit_filter(term, value, negate: negate)
     end
 

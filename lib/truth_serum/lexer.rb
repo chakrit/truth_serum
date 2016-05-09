@@ -1,4 +1,4 @@
-module BooleanParser
+module TruthSerum
   class Lexer
     def initialize(input)
       @input  = input

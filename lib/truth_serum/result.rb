@@ -1,4 +1,4 @@
-module BooleanParser
+module TruthSerum
   class Result
     attr_accessor :terms, :negative_terms, :filters, :negative_filters
 

@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'boolean_parser/version'
+require 'truth_serum/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "boolean_parser"
-  spec.version       = BooleanParser::VERSION
+  spec.name          = "truth_serum"
+  spec.version       = TruthSerum::VERSION
   spec.authors       = ["Chakrit Wichian"]
   spec.email         = ["service@chakrit.net"]
 

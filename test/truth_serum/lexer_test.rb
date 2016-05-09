@@ -1,6 +1,6 @@
 require 'test_helper'
 
-module BooleanParser
+module TruthSerum
   class LexerTest < Minitest::Test
     TESTS = {
       'word'          => [:term, 'word'],

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-module BooleanParser
+module TruthSerum
   class TokenTest < Minitest::Test
     def test_initialize
       token = Token.new(:term, 'asdf')

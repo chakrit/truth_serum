@@ -1,6 +1,6 @@
 require 'test_helper'
 
-module BooleanParser
+module TruthSerum
   class ResultTest < Minitest::Test
     def test_init
       result = Result.new(

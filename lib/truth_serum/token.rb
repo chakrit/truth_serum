@@ -1,4 +1,4 @@
-module BooleanParser
+module TruthSerum
   class Token
     VALID_TYPES = [
       :term,

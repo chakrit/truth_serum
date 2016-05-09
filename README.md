@@ -12,6 +12,17 @@ Features
 gem install truth_serum
 ```
 
+# USAGE
+
+```rb
+require 'truth_serum'
+
+result = TruthSerum.parse("hello world key:value -negate:yes")
+puts result.terms
+puts result.filters
+puts result.negative_filters
+```
+
 # LICENSE
 
 MIT

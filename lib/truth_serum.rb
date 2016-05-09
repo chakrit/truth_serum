@@ -5,4 +5,7 @@ require "truth_serum/lexer"
 require "truth_serum/parser"
 
 module TruthSerum
+  def self.parse(line)
+    Result.new(**Parser.new(Lexer.new(line).lex).parse)
+  end
 end

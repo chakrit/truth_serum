@@ -2,7 +2,7 @@ require 'test_helper'
 
 module TruthSerum
   class ResultTest < Minitest::Test
-    def test_init
+    def test_initialize
       result = Result.new(
         terms:            ['zxcv'],
         negative_terms:   ['asdf'],

@@ -27,4 +27,10 @@ module TruthSerum
       end
     end
   end
+
+  class NilToken < Token
+    def initialize
+      super(:nil, '')
+    end
+  end
 end

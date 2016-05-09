@@ -28,5 +28,13 @@ module TruthSerum
         end
       end
     end
+
+    def test_nil_token
+      assert_equal '', NilToken.new.text
+
+      Token::VALID_TYPES.each do |type|
+        refute NilToken.new.send("#{type}?")
+      end
+    end
   end
 end

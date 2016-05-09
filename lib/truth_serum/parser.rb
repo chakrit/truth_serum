@@ -1,68 +1,85 @@
 module TruthSerum
-  def debug(key, value)
-    puts "#{key}: #{value}"
-  end
-
   class Parser
     def initialize(tokens)
       @tokens = tokens
-      @result = {terms: [], filters: {}}
+    end
+
+    def reset
+      @result = {
+        terms:            [],
+        negative_terms:   [],
+        filters:          {},
+        negative_filters: {},
+      }
     end
 
     def parse
-      @result = {terms: [], filters: {}}
+      reset
       parse_line
       @result
     end
 
     def parse_line
-      while !eof?
-        debug 'parse', 'line'
+      until eof?
+        token = peek
 
         case
-        when peek.term?
-          parse_term
-        when peek.colon? && @result[:terms].length > 0 # `term:` situation
-          parse_filter
-
+        when token.plus? || token.minus?
+          parse_sign
+        when token.term?
+          parse_term_or_filter
         else
-          consume # ignore stray colons and spaces
+          consume # stray colons and spaces
         end
       end
     end
 
-    def parse_term
-      debug 'parse', 'term'
-      @result[:terms] << consume.text
+    def parse_sign
+      negate = consume.minus? while peek.plus? || peek.minus?
+      if peek.term?
+        parse_term_or_filter(negate: negate)
+      else
+        nil
+      end
     end
 
-    def parse_filter
-      debug 'parse', 'filter'
-      key = @result[:terms].pop
-      value = parse_filter_value
-      @result[:filters][key.to_sym] = value
-    end
+    def parse_term_or_filter(negate: false)
+      term   = ''
+      value  = ''
 
-    def parse_filter_value
-      debug 'parse', 'filter_value'
-      consume while peek.colon? # eat the separator and any duplicates
-      consume.text
+      # first portion of text
+      term = consume.text
+      return emit_term(term, negate: negate) unless peek.colon?
+
+      # if we have a filter (detect `:`)
+      consume while peek.colon?
+
+      value = consume.text
+      emit_filter(term, value, negate: negate)
     end
 
     private
 
+    def emit_term(term, negate: false)
+      @result[:terms]          << term unless negate
+      @result[:negative_terms] << term if negate
+    end
+
+    def emit_filter(key, value, negate: false)
+      @result[:filters][key]          = value unless negate
+      @result[:negative_filters][key] = value if negate
+    end
+
     def eof?
-      @tokens.length <= 0
+      peek.is_a?(NilToken)
     end
 
     def peek
-      return nil if eof?
-      @tokens[0]
+      @tokens[0] || NilToken.new
     end
 
     def consume
-      raise 'no more tokens' if eof?
-      @tokens.shift
+      @tokens.shift || NilToken.new
     end
   end
 end

@@ -14,7 +14,7 @@ module TruthSerum
     end
 
     def lex_line
-      while !eof?
+      until eof?
         case peek
         when '"' then lex_quoted_word
         when ':', '+', '-' then lex_symbol
@@ -41,7 +41,7 @@ module TruthSerum
     end
 
     def lex_word
-      while !eof?
+      until eof?
         case peek
         when ' ', ':', '+', '-' then return emit(:term)
         when '"' then discard
@@ -56,7 +56,7 @@ module TruthSerum
     def lex_quoted_word
       raise 'not in quoted word' unless discard == '"'
 
-      while !eof?
+      until eof?
         case peek
         when '\\' then lex_escaped_char
         when '"'

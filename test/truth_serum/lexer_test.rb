@@ -13,6 +13,7 @@ module TruthSerum
       '"space quote"' => [:term, 'space quote'],
       '":sym+quote-"' => [:term, ':sym+quote-'],
       'split:split'   => [:term, 'split', :colon, ':', :term, 'split'],
+      '-a:b+a:b'      => [:minus, '-', :term, 'a', :colon, ':', :term, 'b', :plus, '+', :term, 'a', :colon, ':', :term, 'b'],
       '"\r\n\a\b\""'  => [:term, "\r\nab\""],
       'a "b b"'       => [:term, 'a', :space, ' ', :term, 'b b'],
       '-a+ "h h"-'    => [:minus, '-', :term, 'a', :plus, '+', :space, ' ', :term, 'h h', :minus, '-'],
@@ -28,14 +29,11 @@ module TruthSerum
     private
 
     def assert_lex(input, stream)
-      result  = Lexer.new(input).lex
-      message = "input string: `#{input}` was not lex-ed correctly."
-
-      stream.each_slice(2) do |pair|
-        token = result.shift
-        assert token.type == pair[0], message
-        assert token.text == pair[1], message
+      result  = Lexer.new(input).lex.flat_map do |token|
+        [token.type, token.text]
       end
+
+      assert_equal stream, result, "input string: `#{input}` was not lex-ed correctly."
     end
   end
 end

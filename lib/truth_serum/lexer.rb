@@ -2,13 +2,16 @@ module TruthSerum
   class Lexer
     def initialize(input)
       @input  = input
+    end
+
+    def reset
       @index  = 0
       @tokens = []
       @buffer = ''
     end
 
     def lex
-      @tokens = []
+      reset
       lex_line
       @tokens
     end

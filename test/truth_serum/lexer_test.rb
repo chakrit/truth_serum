@@ -15,6 +15,7 @@ module TruthSerum
       'split:split'   => [:term, 'split', :colon, ':', :term, 'split'],
       '-a:b+a:b'      => [:minus, '-', :term, 'a', :colon, ':', :term, 'b', :plus, '+', :term, 'a', :colon, ':', :term, 'b'],
       '"\r\n\a\b\""'  => [:term, "\r\nab\""],
+      'a:b b'         => [:term, 'a', :colon, ':', :term, 'b', :space, ' ', :term, 'b'],
       'a "b b"'       => [:term, 'a', :space, ' ', :term, 'b b'],
       '-a+ "h h"-'    => [:minus, '-', :term, 'a', :plus, '+', :space, ' ', :term, 'h h', :minus, '-'],
       '-"\r :"zxcv'   => [:minus, '-', :term, "\r :", :term, 'zxcv'],

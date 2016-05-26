@@ -54,8 +54,8 @@ module TruthSerum
       # initial `:` separator
       consume
 
-      # the rest becomes value (including successive `:`s)
-      value += consume.text while peek.colon? || peek.term?
+      # the rest becomes value (including successive `:`s '-'s)
+      value += consume.text while peek.colon? || peek.plus? || peek.minus? || peek.term?
 
       emit_filter(term, value, negate: negate)
     end

@@ -21,6 +21,9 @@ result = TruthSerum.parse("hello world key:value -negate:yes")
 puts result.terms
 puts result.filters
 puts result.negative_filters
+
+query = TruthSerum.unparse(result)
+puts query
 ```
 
 # LICENSE

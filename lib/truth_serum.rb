@@ -5,7 +5,24 @@ require "truth_serum/lexer"
 require "truth_serum/parser"
 
 module TruthSerum
-  def self.parse(line)
+  module_function
+
+  def parse(line)
     Result.new(**Parser.new(Lexer.new(line).lex).parse)
+  end
+
+  def unparse(hash)
+    result = if hash.is_a?(Result)
+               hash
+             else
+               Result.new(
+                 terms:            hash[:terms],
+                 negative_terms:   hash[:negative_terms],
+                 filters:          hash[:filters],
+                 negative_filters: hash[:negative_filters]
+               )
+             end
+
+    result.reconstruct_query
   end
 end

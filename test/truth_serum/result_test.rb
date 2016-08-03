@@ -15,5 +15,18 @@ module TruthSerum
       assert result.filters          == { hello: 'world' }
       assert result.negative_filters == { earth: '616' }
     end
+
+    def test_reconstruct_query
+      UNPARSE_TESTS.each do |key, value|
+        result = Result.new(
+          terms:            value[:terms],
+          negative_terms:   value[:negative_terms],
+          filters:          value[:filters],
+          negative_filters: value[:negative_filters]
+        )
+
+        assert_equal key, result.reconstruct_query
+      end
+    end
   end
 end

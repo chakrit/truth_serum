@@ -40,6 +40,7 @@ module TruthSerum
     'asdf'         => { terms: ['asdf'] },
     '-asdf'        => { negative_terms: ['asdf'] },
     '"a b"'        => { terms: ['a b'] },
+    'a+b'          => { terms: ['a+b'] },
     'a:b'          => { filters: { 'a' => 'b' } },
     '-a:b'         => { negative_filters: { 'a' => 'b' } },
     '"s s":"x x"'  => { filters: { 's s' => 'x x' } },

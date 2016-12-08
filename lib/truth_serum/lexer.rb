@@ -46,7 +46,7 @@ module TruthSerum
     def lex_word
       until eof?
         case peek
-        when ' ', ':', '+', '-' then return emit(:term)
+        when ' ', ':' then return emit(:term)
         when '"' then discard
         else
           consume

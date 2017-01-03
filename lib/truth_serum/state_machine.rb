@@ -11,6 +11,8 @@ module TruthSerum
       end
     end
 
+    attr_accessor :debug
+
     def initialize(input)
       @input    = input
       @states   = self.class.states
@@ -24,6 +26,8 @@ module TruthSerum
 
       state = :start
       loop do
+        puts "#{self.class.name}: #{state}" if debug
+
         next_state = instance_eval(&@states[state])
         case
         when next_state == :end
@@ -52,11 +56,16 @@ module TruthSerum
       result
     end
 
+    def rewind
+      @position -= 1
+    end
+
     def eof?
       @position >= @input.length
     end
 
     def emit(value)
+      puts "#{self.class.name}: << #{value.inspect}" if debug
       @result << value
     end
   end

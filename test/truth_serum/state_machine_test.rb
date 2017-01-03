@@ -54,6 +54,27 @@ module TruthSerum
       end
     end
 
+    class Rewinding < StateMachine
+      state :start do
+        case peek
+        when nil
+          :end
+        when 'x'
+          rewind
+          :upcase
+        else
+          emit(consume)
+          :start
+        end
+      end
+
+      state :upcase do
+        emit(consume.upcase)
+        consume # 'x' marker
+        :start
+      end
+    end
+
     class EOFCheck < StateMachine
       state :start do
         if peek.nil?
@@ -88,6 +109,7 @@ module TruthSerum
       { machine: Branching, input: '12',   output: [[:num, '1'], [:num, '2']] },
       { machine: Branching, input: 'a1b2', output: [[:alpha, 'a'], [:num, '1'], [:alpha, 'b'], [:num, '2']] },
       { machine: Looping,   input: '',     output: [1, 2, 3, 4, 5] },
+      { machine: Rewinding, input: 'abxc', output: ['a', 'b', 'B', 'c'] },
       { machine: EOFCheck,  input: '123',  output: ['1', '2', '3'] },
     ]
 

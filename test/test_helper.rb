@@ -7,6 +7,8 @@ require 'minitest/hell'
 require 'minitest/pride'
 require 'minitest/autorun'
 
-class Minitest::Test
-  parallelize_me!
+module Minitest
+  class Test
+    parallelize_me!
+  end
 end

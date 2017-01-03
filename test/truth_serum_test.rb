@@ -19,7 +19,7 @@ class TruthSerumTest < Minitest::Test
       terms:            ['hello', 'quoted space'],
       negative_terms:   ['world'],
       filters:          { "filter" => "value" },
-      negative_filters: { "a" => "b"}
+      negative_filters: { "a" => "b" }
     )
 
     assert_equal '"quoted space" hello -world filter:value -a:b', TruthSerum.unparse(result)

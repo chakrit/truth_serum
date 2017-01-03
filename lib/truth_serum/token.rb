@@ -16,22 +16,10 @@ module TruthSerum
       @text = text
     end
 
-    def valid?
-      VALID_TYPES.include?(@type) &&
-        !@text.nil? &&
-        !@text.empty?
-    end
-
     VALID_TYPES.each do |type|
       define_method "#{type}?" do
         @type == type
       end
-    end
-  end
-
-  class NilToken < Token
-    def initialize
-      super(:nil, '')
     end
   end
 end

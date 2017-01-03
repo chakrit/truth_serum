@@ -1,87 +1,139 @@
 module TruthSerum
-  class Parser
-    def initialize(tokens)
-      @tokens = tokens
+  class Parser < StateMachine
+    def parse
+      execute
     end
 
-    def reset
-      @result = {
+    # convert result stream to hash
+    def execute
+      result = {
         terms:            [],
         negative_terms:   [],
         filters:          {},
         negative_filters: {},
       }
+
+      stream = super
+      while stream.length > 0
+        result = merge_result(result, stream.shift)
+      end
+
+      result
     end
 
-    def parse
-      reset
-      parse_line
-      @result
-    end
-
-    def parse_line
-      until eof?
-        token = peek
-
-        case
-        when token.plus? || token.minus?
-          parse_sign
-        when token.term?
-          parse_term_or_filter
-        else
-          consume # stray colons and spaces
-        end
+    state :start do
+      token = peek
+      case
+      when token.nil?
+        :end
+      when token.plus? || token.minus?
+        :parse_modifier
+      when token.term?
+        :parse_term_or_filter
+      when token.colon? || token.space?
+        consume # ignored
+        :start
       end
     end
 
-    def parse_sign
-      negate = consume.minus? while peek.plus? || peek.minus?
-      if peek.term?
-        parse_term_or_filter(negate: negate)
+    state :parse_modifier do
+      token = consume
+      case
+      when token.plus?
+        @negate = false
+      when token.minus?
+        @negate = true
       else
-        nil
+        raise 'not a modifier'
+      end
+      :start
+    end
+
+    state :parse_term_or_filter do
+      start_token = consume
+      mid_token = peek
+      raise 'not term or filter' unless start_token.term?
+
+      rewind
+      if mid_token.nil? || !mid_token.colon?
+        :parse_term
+      else # mid_token.colon? == true
+        :parse_filter
       end
     end
 
-    def parse_term_or_filter(negate: false)
-      term   = ''
-      value  = ''
+    state :parse_term do
+      emit_term(consume.text)
+      :start
+    end
 
-      # first portion of text
-      term = consume.text
-      return emit_term(term, negate: negate) unless peek.colon?
+    state :parse_filter do
+      @filter_key = consume.text
+      :parse_filter_separator
+    end
 
-      # initial `:` separator
-      consume
+    state :parse_filter_separator do
+      case
+      when peek.nil? # dangling colon at the end, treat key as single term
+        emit_term(@filter_key)
+        @filter_key = nil
+        :start
+      when peek.colon?
+        consume
+        :parse_filter_separator
+      when peek.term?
+        :parse_filter_value
+      else
+        raise 'malformed filter!!!'
+      end
+    end
 
-      # the rest becomes value (including successive `:`s '-'s)
-      value += consume.text while peek.colon? || peek.plus? || peek.minus? || peek.term?
-
-      emit_filter(term, value, negate: negate)
+    state :parse_filter_value do
+      case
+      when !peek.nil? && (peek.term? || peek.colon?)
+        # consecutive `:` inside value part are treated literally
+        @filter_value ||= ""
+        @filter_value += consume.text
+        :parse_filter_value
+      else
+        emit_filter(@filter_key, @filter_value)
+        @filter_key, @filter_value = nil, nil
+        :start
+      end
     end
 
     private
 
-    def emit_term(term, negate: false)
-      @result[:terms]          << term unless negate
-      @result[:negative_terms] << term if negate
+    def emit_term(term)
+      type = if @negate then :negative_terms else :terms end
+      @negate = false
+
+      emit({ type => [term] })
     end
 
-    def emit_filter(key, value, negate: false)
-      @result[:filters][key]          = value unless negate
-      @result[:negative_filters][key] = value if negate
+    def emit_filter(key, value)
+      type = if @negate then :negative_filters else :filters end
+      @negate = false
+
+      emit({ type => { key => value } })
     end
 
-    def eof?
-      peek.is_a?(NilToken)
-    end
+    # simplified 1-deep merge
+    def merge_result(x, y)
+      result = x.merge({})
+      y.each do |key, value|
+        if result.key?(key)
+          if value.is_a?(Hash)
+            result[key] = result[key].merge(value)
+          elsif value.is_a?(Array)
+            result[key] = result[key] + value
+          end
+        else
+          result[key] = value
+        end
+      end
 
-    def peek
-      @tokens[0] || NilToken.new
-    end
-
-    def consume
-      @tokens.shift || NilToken.new
+      result
     end
   end
 end

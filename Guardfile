@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 clearing :on
 
 guard :minitest do

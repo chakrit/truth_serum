@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module TruthSerum
   class Parser < StateMachine
     def parse
@@ -6,15 +7,16 @@ module TruthSerum
 
     # convert result stream to hash
     def execute
+      @negate = false
       result = {
         terms:            [],
         negative_terms:   [],
         filters:          {},
-        negative_filters: {},
+        negative_filters: {}
       }
 
       stream = super
-      while stream.length > 0
+      until stream.empty?
         result = merge_result(result, stream.shift)
       end
 
@@ -92,7 +94,7 @@ module TruthSerum
       case
       when !peek.nil? && (peek.term? || peek.colon?)
         # consecutive `:` inside value part are treated literally
-        @filter_value ||= ""
+        @filter_value ||= ''
         @filter_value += consume.text
         :parse_filter_value
       else
@@ -105,17 +107,17 @@ module TruthSerum
     private
 
     def emit_term(term)
-      type = if @negate then :negative_terms else :terms end
+      type = @negate ? :negative_terms : :terms
       @negate = false
 
-      emit({ type => [term] })
+      emit(type => [term])
     end
 
     def emit_filter(key, value)
-      type = if @negate then :negative_filters else :filters end
+      type = @negate ? :negative_filters : :filters
       @negate = false
 
-      emit({ type => { key => value } })
+      emit(type => { key => value })
     end
 
     # simplified 1-deep merge

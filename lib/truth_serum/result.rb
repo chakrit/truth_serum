@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module TruthSerum
   class Result
     attr_accessor :terms, :negative_terms, :filters, :negative_filters
@@ -47,8 +48,8 @@ module TruthSerum
 
     def quote_term(term)
       term = term.gsub(/\r/, '\r')
-        .gsub(/\n/, '\n')
-        .gsub(/\\/, '\\\\')
+                 .gsub(/\n/, '\n')
+                 .gsub(/\\/, '\\\\')
 
       "\"#{term}\""
     end

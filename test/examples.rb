@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'test_helper'
 
 module TruthSerum
@@ -18,8 +19,8 @@ module TruthSerum
     'a:b b'         => [:term, 'a', :colon, ':', :term, 'b', :space, ' ', :term, 'b'],
     'a "b b"'       => [:term, 'a', :space, ' ', :term, 'b b'],
     '-a+ "h h"-'    => [:minus, '-', :term, 'a+', :space, ' ', :term, 'h h', :minus, '-'],
-    '-"\r :"zxcv'   => [:minus, '-', :term, "\r :", :term, 'zxcv'],
-  }
+    '-"\r :"zxcv'   => [:minus, '-', :term, "\r :", :term, 'zxcv']
+  }.freeze
 
   PARSE_TESTS = {
     'asdf'         => { terms: ['asdf'] },
@@ -36,8 +37,8 @@ module TruthSerum
     'a::::b'       => { filters: { 'a' => 'b' } },
     'a:":b":"b:"'  => { filters: { 'a' => ':b:b:' } },
     'a:bb:c'       => { filters: { 'a' => 'bb:c' } },
-    'a:2016-01-02' => { filters: { 'a' => '2016-01-02' } },
-  }
+    'a:2016-01-02' => { filters: { 'a' => '2016-01-02' } }
+  }.freeze
 
   UNPARSE_TESTS = {
     'asdf'         => { terms: ['asdf'] },
@@ -51,6 +52,6 @@ module TruthSerum
     '-term -a:b'   => { negative_terms: ['term'], negative_filters: { 'a' => 'b' } },
     'a::::b'       => { filters: { 'a' => ':::b' } },
     'a:bb:c'       => { filters: { 'a' => 'bb:c' } },
-    'a:2016-01-02' => { filters: { 'a' => '2016-01-02' } },
-  }
+    'a:2016-01-02' => { filters: { 'a' => '2016-01-02' } }
+  }.freeze
 end

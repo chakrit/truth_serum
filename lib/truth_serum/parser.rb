@@ -75,18 +75,17 @@ module TruthSerum
     end
 
     state :parse_filter_separator do
+      token = peek
       case
-      when peek.nil? # dangling colon at the end, treat key as single term
+      when token && token.colon?
+        consume
+        :parse_filter_separator
+      when token && token.term?
+        :parse_filter_value
+      else
         emit_term(@filter_key)
         @filter_key = nil
         :start
-      when peek.colon?
-        consume
-        :parse_filter_separator
-      when peek.term?
-        :parse_filter_value
-      else
-        raise 'malformed filter!!!'
       end
     end
 

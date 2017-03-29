@@ -27,7 +27,7 @@ module TruthSerum
 
       state = :start
       loop do
-        puts "#{self.class.name}: #{state}" if debug
+        puts "#{self.class.name}: [#{@input[@position..-1]}] #{state}" if debug
 
         next_state = instance_eval(&@states[state])
         case

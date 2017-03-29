@@ -19,7 +19,11 @@ module TruthSerum
     'a:b b'         => [:term, 'a', :colon, ':', :term, 'b', :space, ' ', :term, 'b'],
     'a "b b"'       => [:term, 'a', :space, ' ', :term, 'b b'],
     '-a+ "h h"-'    => [:minus, '-', :term, 'a+', :space, ' ', :term, 'h h', :minus, '-'],
-    '-"\r :"zxcv'   => [:minus, '-', :term, "\r :", :term, 'zxcv']
+    '-"\r :"zxcv'   => [:minus, '-', :term, "\r :", :term, 'zxcv'],
+    '""eiei""'      => [:term, '', :term, 'eiei'],
+    '""""'          => [:term, '', :term, ''],
+    '"\"'           => [:term, '"'],
+    '"\""\"'        => [:term, '"', :term, '\\']
   }.freeze
 
   PARSE_TESTS = {
@@ -41,7 +45,8 @@ module TruthSerum
     'a::::b'       => { filters: { 'a' => 'b' } },
     'a:":b":"b:"'  => { filters: { 'a' => ':b:b:' } },
     'a:bb:c'       => { filters: { 'a' => 'bb:c' } },
-    'a:2016-01-02' => { filters: { 'a' => '2016-01-02' } }
+    'a:2016-01-02' => { filters: { 'a' => '2016-01-02' } },
+    'name:""ei""'  => { terms: [], filters: { 'name' => 'ei' } }
   }.freeze
 
   UNPARSE_TESTS = {

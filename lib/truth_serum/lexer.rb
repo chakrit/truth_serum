@@ -98,7 +98,7 @@ module TruthSerum
     end
 
     def emit(type)
-      super(Token.new(type, @buffer))
+      super(Token.new(type, @buffer || ''))
       @buffer = nil
     end
   end

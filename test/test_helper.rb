@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'truth_serum'
-require 'examples'
 
 require 'minitest'
 require 'minitest/hell'

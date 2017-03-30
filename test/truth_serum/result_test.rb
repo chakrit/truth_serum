@@ -2,6 +2,21 @@
 require 'test_helper'
 
 module TruthSerum
+  UNPARSE_TESTS = {
+    'asdf'         => { terms: ['asdf'] },
+    '-asdf'        => { negative_terms: ['asdf'] },
+    '"a b"'        => { terms: ['a b'] },
+    'a+b'          => { terms: ['a+b'] },
+    'a:b'          => { filters: { 'a' => 'b' } },
+    '-a:b'         => { negative_filters: { 'a' => 'b' } },
+    '"s s":"x x"'  => { filters: { 's s' => 'x x' } },
+    'term a:b'     => { terms: ['term'], filters: { 'a' => 'b' } },
+    '-term -a:b'   => { negative_terms: ['term'], negative_filters: { 'a' => 'b' } },
+    'a::::b'       => { filters: { 'a' => ':::b' } },
+    'a:bb:c'       => { filters: { 'a' => 'bb:c' } },
+    'a:2016-01-02' => { filters: { 'a' => '2016-01-02' } }
+  }.freeze
+
   class ResultTest < Minitest::Test
     def test_initialize
       result = Result.new(

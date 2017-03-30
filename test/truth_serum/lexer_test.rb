@@ -2,6 +2,30 @@
 require 'test_helper'
 
 module TruthSerum
+  LEX_TESTS = {
+    'word'          => [:term, 'word'],
+    'space  space'  => [:term, 'space', :space, '  ', :term, 'space'],
+    '::++--'        => [:colon, ':', :colon, ':', :plus, '+', :plus, '+', :minus, '-', :minus, '-'],
+    'same+word'     => [:term, 'same+word'],
+    '"quote"'       => [:term, 'quote'],
+    '"unended'      => [:term, 'unended'],
+    'ending"'       => [:term, 'ending'],
+    'mid"dle'       => [:term, 'middle'],
+    '"space quote"' => [:term, 'space quote'],
+    '":sym+quote-"' => [:term, ':sym+quote-'],
+    'split:split'   => [:term, 'split', :colon, ':', :term, 'split'],
+    '-a:b+a:b'      => [:minus, '-', :term, 'a', :colon, ':', :term, 'b+a', :colon, ':', :term, 'b'],
+    '"\r\n\a\b\""'  => [:term, "\r\nab\""],
+    'a:b b'         => [:term, 'a', :colon, ':', :term, 'b', :space, ' ', :term, 'b'],
+    'a "b b"'       => [:term, 'a', :space, ' ', :term, 'b b'],
+    '-a+ "h h"-'    => [:minus, '-', :term, 'a+', :space, ' ', :term, 'h h', :minus, '-'],
+    '-"\r :"zxcv'   => [:minus, '-', :term, "\r :", :term, 'zxcv'],
+    '""eiei""'      => [:term, '', :term, 'eiei'],
+    '""""'          => [:term, '', :term, ''],
+    '"\"'           => [:term, '"'],
+    '"\""\"'        => [:term, '"', :term, '\\']
+  }.freeze
+
   class LexerTest < Minitest::Test
     def test_lex
       LEX_TESTS.each do |input, tokens|

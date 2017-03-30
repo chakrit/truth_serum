@@ -2,6 +2,8 @@
 require 'test_helper'
 
 module TruthSerum
+  LEX_FUZZ_CHARS = 'abc+-:"\\'
+
   LEX_TESTS = {
     'word'          => [:term, 'word'],
     'space  space'  => [:term, 'space', :space, '  ', :term, 'space'],
@@ -33,10 +35,20 @@ module TruthSerum
       end
     end
 
+    def test_lex_fuzzy # ensure we never puke on input, ever
+      fuzz(LEX_FUZZ_CHARS) do |line|
+        refute_nil lex(line)
+      end
+    end
+
     private
 
+    def lex(input)
+      Lexer.new(input).lex
+    end
+
     def assert_lex(input, stream)
-      result = Lexer.new(input).lex.flat_map do |token|
+      result = lex(input).flat_map do |token|
         [token.type, token.text]
       end
 

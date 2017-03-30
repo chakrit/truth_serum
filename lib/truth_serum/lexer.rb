@@ -82,6 +82,8 @@ module TruthSerum
         append("\r")
       when 'n'
         append("\n")
+      when nil
+        append('\\') # EOF, treat preceding \ as literal
       else # '\\' '"' and everything else is passed verbatim
         append(char)
       end

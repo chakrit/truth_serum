@@ -11,6 +11,14 @@ module TruthSerum
 
     attr_accessor :type, :text
 
+    class << self
+      def from_array(arr)
+        arr.map do |type, text|
+          Token.new(type, text)
+        end
+      end
+    end
+
     def initialize(type, text)
       @type = type
       @text = text

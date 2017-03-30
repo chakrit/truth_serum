@@ -2,6 +2,20 @@
 require 'test_helper'
 
 module TruthSerum
+  PARSE_FUZZ_TOKENS = [
+    [:term, 'term'],
+    # [:term, ''],
+    [:term, 'c'],
+    [:colon, ':'],
+    [:space, ' '],
+    # [:space, ''],
+    [:space, "\n"],
+    # [:space, "\r"],
+    [:space, "\t"],
+    [:plus, '+'],
+    [:plus, '-'],
+  ]
+
   PARSE_TESTS = {
     'asdf'         => { terms: ['asdf'] },
     '-asdf'        => { negative_terms: ['asdf'] },
@@ -28,17 +42,32 @@ module TruthSerum
   class ParserTest < Minitest::Test
     def test_parse
       PARSE_TESTS.each do |input, expects|
-        result = parse(input)
-        expects.each do |key, value|
-          assert_equal value, result[key], "invalid #{key} result for `#{input}` search"
-        end
+        assert_parse input, expects
+      end
+    end
+
+    def test_parse_fuzzy
+      tokens = Token.from_array(PARSE_FUZZ_TOKENS)
+      fuzz(tokens) do |stream|
+        refute_nil parse(stream)
       end
     end
 
     private
 
+    def lex(line)
+      Lexer.new(line).lex
+    end
+
     def parse(line)
-      Parser.new(Lexer.new(line).lex).parse
+      Parser.new(line).parse
+    end
+
+    def assert_parse(line, expects)
+      result = parse(lex(line))
+      expects.each do |key, value|
+        assert_equal value, result[key], "invalid #{key} result for `#{line}` search"
+      end
     end
   end
 end

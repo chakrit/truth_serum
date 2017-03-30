@@ -44,10 +44,12 @@ module TruthSerum
       end
     end
 
-    def test_parse_fuzzy
-      tokens = Token.from_array(PARSE_FUZZ_TOKENS)
-      fuzz(tokens) do |stream|
-        refute_nil parse(stream)
+    if ENV['SLOWFUZZ']
+      def test_parse_fuzzy
+        tokens = Token.from_array(PARSE_FUZZ_TOKENS)
+        fuzz(tokens) do |stream|
+          refute_nil parse(stream)
+        end
       end
     end
 

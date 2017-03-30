@@ -11,8 +11,8 @@ module TruthSerum
     [:space, "\r"],
     [:space, "\t"],
     [:plus, '+'],
-    [:plus, '-'],
-  ]
+    [:plus, '-']
+  ].freeze
 
   PARSE_TESTS = {
     'asdf'         => { terms: ['asdf'] },

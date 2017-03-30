@@ -19,8 +19,7 @@ module TruthSerum
                hash
              else
                Result.new(
-                 # terms:            hash[:terms],
-                 terms => hash[:terms],
+                 terms:            hash[:terms],
                  negative_terms:   hash[:negative_terms],
                  filters:          hash[:filters],
                  negative_filters: hash[:negative_filters]

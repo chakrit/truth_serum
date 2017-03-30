@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 class Fuzzer
   def initialize(vocab)
     @vocab = vocab.dup

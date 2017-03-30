@@ -1,13 +1,14 @@
 # frozen_string_literal: true
+
 module TruthSerum
   class Token
-    VALID_TYPES = [
-      :term,
-      :colon,
-      :space,
-      :plus,
-      :minus
-    ].freeze
+    VALID_TYPES = %i(
+      term
+      colon
+      space
+      plus
+      minus
+    ).freeze
 
     attr_accessor :type, :text
 

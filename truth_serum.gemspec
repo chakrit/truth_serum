@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # vim: filetype=ruby
 # coding: utf-8
+
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'truth_serum/version'

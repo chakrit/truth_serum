@@ -8,19 +8,15 @@ module TruthSerum
     # convert result stream to hash
     def execute
       @negate = false
-      result = {
+      @hash = {
         terms:            [],
         negative_terms:   [],
         filters:          {},
         negative_filters: {}
       }
 
-      stream = super
-      until stream.empty?
-        result = merge_result(result, stream.shift)
-      end
-
-      result
+      super
+      @hash
     end
 
     state :start do
@@ -109,32 +105,22 @@ module TruthSerum
       type = @negate ? :negative_terms : :terms
       @negate = false
 
-      emit(type => [term])
+      if @hash.key?(type)
+        @hash[type] << term
+      else
+        @hash[type] = [term]
+      end
     end
 
     def emit_filter(key, value)
       type = @negate ? :negative_filters : :filters
       @negate = false
 
-      emit(type => { key => value })
-    end
-
-    # simplified 1-deep merge
-    def merge_result(x, y)
-      result = x.merge({})
-      y.each do |key, value|
-        if result.key?(key)
-          if value.is_a?(Hash)
-            result[key] = result[key].merge(value)
-          elsif value.is_a?(Array)
-            result[key] = result[key] + value
-          end
-        else
-          result[key] = value
-        end
+      if @hash.key?(type)
+        @hash[type][key] = value
+      else
+        @hash[type] = { key => value }
       end
-
-      result
     end
   end
 end

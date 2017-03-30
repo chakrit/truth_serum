@@ -4,13 +4,11 @@ require 'test_helper'
 module TruthSerum
   PARSE_FUZZ_TOKENS = [
     [:term, 'term'],
-    # [:term, ''],
     [:term, 'c'],
     [:colon, ':'],
     [:space, ' '],
-    # [:space, ''],
     [:space, "\n"],
-    # [:space, "\r"],
+    [:space, "\r"],
     [:space, "\t"],
     [:plus, '+'],
     [:plus, '-'],

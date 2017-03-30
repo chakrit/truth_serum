@@ -2,7 +2,7 @@
 require 'test_helper'
 
 module TruthSerum
-  LEX_FUZZ_CHARS = 'abc+-:"\\'
+  LEX_FUZZ_CHARS = "abc+-:\"\\ \r\n\t"
 
   LEX_TESTS = {
     'word'          => [:term, 'word'],

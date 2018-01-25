@@ -2,13 +2,13 @@
 
 module TruthSerum
   class Token
-    VALID_TYPES = %i(
+    VALID_TYPES = %i[
       term
       colon
       space
       plus
       minus
-    ).freeze
+    ].freeze
 
     attr_accessor :type, :text
 

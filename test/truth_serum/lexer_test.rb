@@ -37,7 +37,8 @@ module TruthSerum
     end
 
     if ENV['SLOWFUZZ']
-      def test_lex_fuzzy # ensure we never puke on input, ever
+      # ensure we never puke on input, ever
+      def test_lex_fuzzy 
         fuzz(LEX_FUZZ_CHARS) do |line|
           refute_nil lex(line)
         end

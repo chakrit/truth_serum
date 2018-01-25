@@ -74,10 +74,10 @@ module TruthSerum
     state :parse_filter_separator do
       token = peek
       case
-      when token && token.colon?
+      when token&.colon?
         consume
         :parse_filter_separator
-      when token && token.term?
+      when token&.term?
         :parse_filter_value
       else
         emit_term(@filter_key)

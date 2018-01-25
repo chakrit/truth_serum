@@ -111,8 +111,8 @@ module TruthSerum
       { machine: Branching, input: '12',   output: [[:num, '1'], [:num, '2']] },
       { machine: Branching, input: 'a1b2', output: [[:alpha, 'a'], [:num, '1'], [:alpha, 'b'], [:num, '2']] },
       { machine: Looping,   input: '',     output: [1, 2, 3, 4, 5] },
-      { machine: Rewinding, input: 'abxc', output: %w(a b B c) },
-      { machine: EOFCheck,  input: '123',  output: %w(1 2 3) }
+      { machine: Rewinding, input: 'abxc', output: %w[a b B c] },
+      { machine: EOFCheck,  input: '123',  output: %w[1 2 3] }
     ].freeze
 
     ERRORS = [

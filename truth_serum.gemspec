@@ -20,11 +20,11 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler',        '~> 1.12'
+  spec.add_development_dependency 'bundler',        '~> 1.16'
   spec.add_development_dependency 'guard',          '~> 2.14'
   spec.add_development_dependency 'guard-minitest', '~> 2.4'
-  spec.add_development_dependency 'minitest',       '~> 5.9'
-  spec.add_development_dependency 'pry',            '~> 0.10'
-  spec.add_development_dependency 'rake',           '~> 11.2'
-  spec.add_development_dependency 'rubocop',        '~> 0.46'
+  spec.add_development_dependency 'minitest',       '~> 5.11'
+  spec.add_development_dependency 'pry',            '~> 0.11'
+  spec.add_development_dependency 'rake',           '~> 12.3'
+  spec.add_development_dependency 'rubocop',        '~> 0.52'
 end

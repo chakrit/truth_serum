@@ -2,6 +2,10 @@
 
 module TruthSerum
   class Lexer < StateMachine
+    def initialize(input)
+      super input.strip
+    end
+
     def lex
       execute
     end
@@ -42,7 +46,7 @@ module TruthSerum
     state :lex_term do
       case peek
       when ' ', ':', nil
-        emit(:term)
+        emit_term
         :start
       when '"'
         consume # ignored
@@ -104,6 +108,15 @@ module TruthSerum
       @buffer ||= ''
       super(Token.new(type, @buffer))
       @buffer = nil
+    end
+
+    def emit_term
+      case @buffer
+      when 'AND', 'OR'
+        emit(:conj)
+      else
+        emit(:term)
+      end
     end
   end
 end

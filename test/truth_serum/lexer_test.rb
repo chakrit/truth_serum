@@ -26,7 +26,10 @@ module TruthSerum
     '""eiei""'      => [:term, '', :term, 'eiei'],
     '""""'          => [:term, '', :term, ''],
     '"\"'           => [:term, '"'],
-    '"\""\"'        => [:term, '"', :term, '\\']
+    '"\""\"'        => [:term, '"', :term, '\\'],
+    'word AND join' => [:term, 'word', :space, ' ', :conj, 'AND', :space, ' ', :term, 'join'],
+    '-word AND join' => [:minus, '-', :term, 'word', :space, ' ', :conj, 'AND', :space, ' ', :term, 'join'],
+    'word OR +join' => [:term, 'word', :space, ' ', :conj, 'OR', :space, ' ', :plus, '+', :term, 'join']
   }.freeze
 
   class LexerTest < Minitest::Test
@@ -38,7 +41,7 @@ module TruthSerum
 
     if ENV['SLOWFUZZ']
       # ensure we never puke on input, ever
-      def test_lex_fuzzy 
+      def test_lex_fuzzy
         fuzz(LEX_FUZZ_CHARS) do |line|
           refute_nil lex(line)
         end

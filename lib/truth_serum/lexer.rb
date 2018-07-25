@@ -113,6 +113,7 @@ module TruthSerum
     def emit_term
       case @buffer
       when 'AND', 'OR'
+        @buffer = @buffer.downcase.to_sym
         emit(:conj)
       else
         emit(:term)

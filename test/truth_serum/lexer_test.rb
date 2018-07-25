@@ -27,9 +27,9 @@ module TruthSerum
     '""""'          => [:term, '', :term, ''],
     '"\"'           => [:term, '"'],
     '"\""\"'        => [:term, '"', :term, '\\'],
-    'word AND join' => [:term, 'word', :space, ' ', :conj, 'AND', :space, ' ', :term, 'join'],
-    '-word AND join' => [:minus, '-', :term, 'word', :space, ' ', :conj, 'AND', :space, ' ', :term, 'join'],
-    'word OR +join' => [:term, 'word', :space, ' ', :conj, 'OR', :space, ' ', :plus, '+', :term, 'join']
+    'word AND join' => [:term, 'word', :space, ' ', :conj, :and, :space, ' ', :term, 'join'],
+    '-word AND join' => [:minus, '-', :term, 'word', :space, ' ', :conj, :and, :space, ' ', :term, 'join'],
+    'word OR +join' => [:term, 'word', :space, ' ', :conj, :or, :space, ' ', :plus, '+', :term, 'join']
   }.freeze
 
   class LexerTest < Minitest::Test

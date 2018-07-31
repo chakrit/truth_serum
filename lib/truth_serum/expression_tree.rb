@@ -17,7 +17,7 @@ module TruthSerum
       @default_operator = Token.new(:conj, :and)
       @negate = false
       @operands = []
-      @operators = []
+      @conjunctions = []
 
       super
       @operands[0]
@@ -30,11 +30,13 @@ module TruthSerum
         :end
       when token.plus? || token.minus?
         :parse_modifier
-      when token.term?
-        :parse_term_or_filter
       when token.colon? || token.space?
         consume # ignored
         :start
+      when token.term?
+        :parse_term_or_filter
+      when token.conj? # (treat conjunction as term if state is first state or previous state is conjunction)
+        :parse_term
       end
     end
 
@@ -47,12 +49,19 @@ module TruthSerum
       when token.plus?, token.term?, token.minus?
         emit_operator(@default_operator)
         :start
-      when token.colon?, token.space?
+      when token.colon?, token.space? # ignored
         consume
         :parse_conjunction
       when token.conj?
         consume
-        emit_operator(token)
+        # if nil after conjunction then conjunction should treat as 'term' also we need conjunction between term.
+        if peek.nil?
+          rewind
+          emit_operator(@default_operator)
+          :parse_term
+        else
+          emit_operator(token)
+        end
         :start
       end
     end
@@ -84,7 +93,17 @@ module TruthSerum
     end
 
     state :parse_term do
-      emit_term(consume.text)
+      token = consume
+
+      # handle special case for conjunction such as
+      # "_AND_ hello world",
+      # "hello AND AND world",
+      # _AND_ should treat as term not conjunction
+      if token.conj?
+        emit_term(token.text.to_s.upcase)
+      else
+        emit_term(token.text)
+      end
       :parse_conjunction
     end
 
@@ -142,22 +161,22 @@ module TruthSerum
 
     def emit_operator(token)
       compose_operand until higher_precedence? token.text
-      @operators << token.text
+      @conjunctions << token.text
     end
 
     def emit_eof
-      compose_operand until @operators.empty?
+      compose_operand until @conjunctions.empty?
     end
 
     def compose_operand
       rhs_operand = @operands.pop
       lhs_operand = @operands.pop
-      operator = @operators.pop
+      operator = @conjunctions.pop
       @operands << [operator, lhs_operand, rhs_operand]
     end
 
     def higher_precedence?(type)
-      @operators.empty? || PRECEDENCE_TABLE[type] < PRECEDENCE_TABLE[@operators.last]
+      @conjunctions.empty? || PRECEDENCE_TABLE[type] < PRECEDENCE_TABLE[@conjunctions.last]
     end
   end
 end

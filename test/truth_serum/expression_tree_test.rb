@@ -40,6 +40,9 @@ module TruthSerum
     'hello AND world' =>  [:and, [:term, 'hello'], [:term, 'world']],
     'hello:kitty AND world' => [:and, [:filter, 'hello', 'kitty'], [:term, 'world']],
     'hello:kitty OR world' => [:or, [:filter, 'hello', 'kitty'], [:term, 'world']],
+    'AND hello world' =>  [:and, [:and, [:term, 'AND'], [:term, 'hello']], [:term, 'world']],
+    'hello AND AND world' =>  [:and, [:and, [:term, 'hello'], [:term, 'AND']], [:term, 'world']],
+    'hello world AND' =>  [:and, [:and, [:term, 'hello'], [:term, 'world']], [:term, 'AND']],
     # rubocop:disable Layout/AlignArray, Layout/MultilineArrayBraceLayout
     'hello world OR key:value -foobar -key:value' => [:or,
                                                         [:and,

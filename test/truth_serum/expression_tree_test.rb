@@ -12,7 +12,9 @@ module TruthSerum
     [:space, "\r"],
     [:space, "\t"],
     [:plus, '+'],
-    [:plus, '-']
+    [:plus, '-'],
+    [:operator, 'AND'],
+    [:operator, 'OR']
   ].freeze
 
   NEW_PARSE_TESTS = {
@@ -40,9 +42,10 @@ module TruthSerum
     'hello AND world' =>  [:and, [:term, 'hello'], [:term, 'world']],
     'hello:kitty AND world' => [:and, [:filter, 'hello', 'kitty'], [:term, 'world']],
     'hello:kitty OR world' => [:or, [:filter, 'hello', 'kitty'], [:term, 'world']],
-    'AND hello world' =>  [:and, [:and, [:term, 'AND'], [:term, 'hello']], [:term, 'world']],
-    'hello AND AND world' =>  [:and, [:and, [:term, 'hello'], [:term, 'AND']], [:term, 'world']],
-    'hello world AND' =>  [:and, [:and, [:term, 'hello'], [:term, 'world']], [:term, 'AND']],
+    'AND hello world' =>  [:and, [:term, 'hello'], [:term, 'world']],
+    'hello AND AND world' =>  [:and, [:term, 'hello'], [:term, 'world']],
+    'hello world AND' =>  [:and, [:term, 'hello'], [:term, 'world']],
+    'abc:- +edf' =>   [:and, [:term, 'abc'], [:term, 'edf']],
     # rubocop:disable Layout/AlignArray, Layout/MultilineArrayBraceLayout
     'hello world OR key:value -foobar -key:value' => [:or,
                                                         [:and,

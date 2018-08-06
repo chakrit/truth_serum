@@ -2,7 +2,6 @@
 
 module TruthSerum
   PRECEDENCE_TABLE = {
-    negate: 0,
     and: 1,
     or: 2
   }.freeze
@@ -14,10 +13,10 @@ module TruthSerum
 
     # convert result stream to hash
     def execute
-      @default_operator = Token.new(:conj, :and)
+      @default_operator = Token.new(:operator, :and)
       @negate = false
       @operands = []
-      @conjunctions = []
+      @operators = []
 
       super
       @operands[0]
@@ -27,42 +26,38 @@ module TruthSerum
       token = peek
       case
       when token.nil?
+        emit_eof
         :end
       when token.plus? || token.minus?
         :parse_modifier
-      when token.colon? || token.space?
+      # (ignore operator if state is first state or previous state is operator)
+      when token.colon? || token.space? || token.operator?
         consume # ignored
         :start
       when token.term?
         :parse_term_or_filter
-      when token.conj? # (treat conjunction as term if state is first state or previous state is conjunction)
-        :parse_term
       end
     end
 
-    state :parse_conjunction do
+    state :parse_operator do
       token = peek
       case
       when token.nil?
         emit_eof
         :end
+      when token.colon?, token.space? # ignored
+        consume
+        :parse_operator
       when token.plus?, token.term?, token.minus?
         emit_operator(@default_operator)
         :start
-      when token.colon?, token.space? # ignored
+      when token.operator?
         consume
-        :parse_conjunction
-      when token.conj?
-        consume
-        # if nil after conjunction then conjunction should treat as 'term' also we need conjunction between term.
-        if peek.nil?
-          rewind
-          emit_operator(@default_operator)
-          :parse_term
-        else
-          emit_operator(token)
-        end
+        # if nil after operator then operator should ignored it.
+        emit_operator(token) unless peek.nil?
         :start
+      else
+        raise "token should be operator (found: #{token.type})"
       end
     end
 
@@ -94,17 +89,8 @@ module TruthSerum
 
     state :parse_term do
       token = consume
-
-      # handle special case for conjunction such as
-      # "_AND_ hello world",
-      # "hello AND AND world",
-      # _AND_ should treat as term not conjunction
-      if token.conj?
-        emit_term(token.text.to_s.upcase)
-      else
-        emit_term(token.text)
-      end
-      :parse_conjunction
+      emit_term(token.text)
+      :parse_operator
     end
 
     state :parse_filter do
@@ -123,7 +109,7 @@ module TruthSerum
       else
         emit_term(@filter_key)
         @filter_key = nil
-        :parse_conjunction
+        :parse_operator
       end
     end
 
@@ -137,7 +123,7 @@ module TruthSerum
       else
         emit_filter(@filter_key, @filter_value)
         @filter_key, @filter_value = nil, nil
-        :parse_conjunction
+        :parse_operator
       end
     end
 
@@ -160,23 +146,24 @@ module TruthSerum
     end
 
     def emit_operator(token)
-      compose_operand until higher_precedence? token.text
-      @conjunctions << token.text
+      operator = token.text.downcase.to_sym # ex. convert 'AND' to :and.
+      compose_operand until higher_precedence? operator
+      @operators << operator
     end
 
     def emit_eof
-      compose_operand until @conjunctions.empty?
+      compose_operand until @operators.empty? || @operands.length <= 1
     end
 
     def compose_operand
       rhs_operand = @operands.pop
       lhs_operand = @operands.pop
-      operator = @conjunctions.pop
+      operator = @operators.pop
       @operands << [operator, lhs_operand, rhs_operand]
     end
 
     def higher_precedence?(type)
-      @conjunctions.empty? || PRECEDENCE_TABLE[type] < PRECEDENCE_TABLE[@conjunctions.last]
+      @operators.empty? || PRECEDENCE_TABLE[type] < PRECEDENCE_TABLE[@operators.last]
     end
   end
 end

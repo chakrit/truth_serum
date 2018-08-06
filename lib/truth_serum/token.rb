@@ -5,7 +5,7 @@ module TruthSerum
     VALID_TYPES = %i[
       term
       colon
-      conj
+      operator
       space
       plus
       minus

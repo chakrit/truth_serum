@@ -54,7 +54,8 @@ module TruthSerum
       raise 'not term or filter' unless start_token.term?
 
       rewind
-      if mid_token.nil? || !mid_token.colon?
+      case
+      when mid_token.nil?, !mid_token.colon?
         :parse_term
       else # mid_token.colon? == true
         :parse_filter

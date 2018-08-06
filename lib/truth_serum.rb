@@ -6,6 +6,7 @@ require 'truth_serum/token'
 require 'truth_serum/state_machine'
 require 'truth_serum/lexer'
 require 'truth_serum/parser'
+require 'truth_serum/expression_tree'
 
 module TruthSerum
   module_function
